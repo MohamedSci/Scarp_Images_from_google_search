@@ -15,15 +15,25 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
-
-
+const path = require('path');
+const createEmptyTextFile = require('./create_empty_text_files');
 before(() => {
-    cy.readFile(path.join(Cypress.config('fileServerFolder'), 'titles.txt')).then((data) => {
-      const titles = data.split('\n').filter(Boolean);
-      titles.forEach((title) => {
-        createEmptyTextFile(title);
-      });
+  cy.readFile(path.join(Cypress.config('fileServerFolder'), 'titles.txt')).then((data) => {
+    const titles = data.split('\n').filter(Boolean);
+    titles.forEach((title) => {
+      // Create Empty Text Files 
+      const fileName = title + '_64.txt';
+      const filePath = path.join('cypress', 'fixtures', fileName); // Adjust the path as needed
+
+      try {
+        fs.writeFileSync(filePath, '', 'utf-8');
+        console.log(`Empty text file "${fileName}" created successfully.`);
+      } catch (err) {
+        console.error(`Failed to create empty text file "${fileName}". Error: ${err.message}`);
+      }
+
     });
   });
+});
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
